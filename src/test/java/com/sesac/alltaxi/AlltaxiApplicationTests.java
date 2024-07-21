@@ -1,10 +1,10 @@
-package SeSAC.AllTaxi;
+package com.sesac.alltaxi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AllTaxiApplicationTests {
+class AlltaxiApplicationTests {
 
 	@Test
 	void contextLoads() {
