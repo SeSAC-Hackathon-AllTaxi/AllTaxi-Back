@@ -1,7 +1,5 @@
 package com.sesac.alltaxi.domain;
 
-package com.example.model;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

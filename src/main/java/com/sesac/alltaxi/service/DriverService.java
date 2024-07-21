@@ -1,5 +1,12 @@
 package com.sesac.alltaxi.service;
 
+import com.sesac.alltaxi.domain.Driver;
+import com.sesac.alltaxi.repository.DriverRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
 @Service
 public class DriverService {
 

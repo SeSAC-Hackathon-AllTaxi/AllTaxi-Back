@@ -1,11 +1,11 @@
 package com.sesac.alltaxi.service;
 
-import com.example.model.Request;
-import com.example.model.User;
-import com.example.model.TaxiDriver;
-import com.example.repository.RequestRepository;
-import com.example.repository.UserRepository;
-import com.example.repository.TaxiDriverRepository;
+import com.sesac.alltaxi.domain.Request;
+import com.sesac.alltaxi.domain.User;
+import com.sesac.alltaxi.domain.Driver;
+import com.sesac.alltaxi.repository.RequestRepository;
+import com.sesac.alltaxi.repository.UserRepository;
+import com.sesac.alltaxi.repository.DriverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
 package com.sesac.alltaxi.repository;
 
-import com.example.model.TaxiDriver;
+import com.sesac.alltaxi.domain.Driver;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DriverRepository extends JpaRepository<TaxiDriver, Long> {
+public interface DriverRepository extends JpaRepository<Driver, Long> {
 }
