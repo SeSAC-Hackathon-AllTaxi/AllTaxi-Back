@@ -5,6 +5,7 @@ import com.sesac.alltaxi.domain.Request;
 import com.sesac.alltaxi.domain.User;
 import com.sesac.alltaxi.dto.AiDestinationResponseDto;
 import com.sesac.alltaxi.dto.UserVoiceDto;
+import com.sesac.alltaxi.dto.RequestDto;
 import com.sesac.alltaxi.service.DriverService;
 import com.sesac.alltaxi.service.RequestService;
 import com.sesac.alltaxi.service.UserService;
@@ -52,6 +53,11 @@ public class MainController {
         return aiDestinationResponse;
         // 추후 고객의 수락/재설정 여부에 따라 request 생성하는 부분 구현
         // requestService.saveRequest(request);
+    }
+
+    @PostMapping("/create-request")
+    public Request createRequest(@RequestBody RequestDto requestDto) {
+        return requestService.createRequest(requestDto);
     }
 
     @GetMapping("/request/{id}")

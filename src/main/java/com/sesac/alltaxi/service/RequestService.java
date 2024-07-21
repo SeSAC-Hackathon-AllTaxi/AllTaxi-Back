@@ -3,6 +3,7 @@ package com.sesac.alltaxi.service;
 import com.sesac.alltaxi.domain.Request;
 import com.sesac.alltaxi.domain.User;
 import com.sesac.alltaxi.domain.Driver;
+import com.sesac.alltaxi.dto.RequestDto;
 import com.sesac.alltaxi.repository.RequestRepository;
 import com.sesac.alltaxi.repository.UserRepository;
 import com.sesac.alltaxi.repository.DriverRepository;
@@ -24,29 +25,24 @@ public class RequestService {
     @Autowired
     private DriverRepository driverRepository;
 
-    public Request createRequest(Long userId, String pickupLocation, String destination) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    public Request createRequest(RequestDto requestDto) {
+        User user = userRepository.findById(requestDto.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
         Request request = new Request();
         request.setUser(user);
-        request.setPickupLocation(pickupLocation);
-        request.setDestination(destination);
+        request.setPickupLocation(requestDto.getPickupLocation());
+        request.setDestination(requestDto.getDestination());
         request.setStatus("pending");
         return requestRepository.save(request);
     }
 
     public Request assignDriver(Long requestId, Long driverId) {
-        Request request = requestRepository.findById(requestId).orElseThrow(() -> new RuntimeException("Request not found"));
-        Driver driver = driverRepository.findById(driverId).orElseThrow(() -> new RuntimeException("Driver not found"));
+        Request request = requestRepository.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Request not found"));
+        Driver driver = driverRepository.findById(driverId)
+                .orElseThrow(() -> new RuntimeException("Driver not found"));
         request.setDriver(driver);
         request.setStatus("assigned");
-        return requestRepository.save(request);
-    }
-
-    public List<Request> getAllRequests() {
-        return requestRepository.findAll();
-    }
-
-    public Request saveRequest(Request request) {
         return requestRepository.save(request);
     }
 
