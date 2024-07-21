@@ -22,7 +22,7 @@ public class Request {
     @ManyToOne
     private Driver driver;
 
-    // Getter & Setter
+    // Getter & Setter 메서드 추가
     public Long getId() {
         return id;
     }

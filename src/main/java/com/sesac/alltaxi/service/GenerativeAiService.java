@@ -1,6 +1,8 @@
 package com.sesac.alltaxi.service;
 
+import com.sesac.alltaxi.dto.AiDestinationResponseDto;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class GenerativeAiService {
