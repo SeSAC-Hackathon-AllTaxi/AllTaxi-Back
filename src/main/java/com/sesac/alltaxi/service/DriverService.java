@@ -13,11 +13,11 @@ public class DriverService {
     @Autowired
     private DriverRepository driverRepository;
 
-    public Driver saveTaxiDriver(Driver driver) {
+    public Driver saveDriver(Driver driver) {
         return driverRepository.save(driver);
     }
 
-    public Optional<Driver> getTaxiDriverById(Long id) {
+    public Optional<Driver> getDriverById(Long id) {
         return driverRepository.findById(id);
     }
 }
