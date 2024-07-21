@@ -3,6 +3,7 @@ package com.sesac.alltaxi.controller;
 import com.sesac.alltaxi.domain.Driver;
 import com.sesac.alltaxi.domain.Request;
 import com.sesac.alltaxi.domain.User;
+import com.sesac.alltaxi.dto.AiDestinationResponseDto;
 import com.sesac.alltaxi.dto.UserVoiceDto;
 import com.sesac.alltaxi.service.DriverService;
 import com.sesac.alltaxi.service.RequestService;
@@ -44,7 +45,7 @@ public class MainController {
     @PostMapping("/request")
     public AiDestinationResponseDto createRequest(@RequestBody UserVoiceDto userVoiceDto) {
         // 음성 -> 텍스트 변환 및 생성형 AI 호출 로직 추가
-        String convertedText = speechToTextService.convertSpeechToText(userVoiceDto.getaudioData);
+        String convertedText = speechToTextService.convertSpeechToText(userVoiceDto.getAudioData());
         // 도출한 목적지 정보(이름, 전화번호, 주소, 영업 시간 등) 받아옴
         AiDestinationResponseDto aiDestinationResponse = generativeAiService.getGenerativeAiResponse(convertedText);
         // client에 전달해 유추한 목적지 정보 노출
