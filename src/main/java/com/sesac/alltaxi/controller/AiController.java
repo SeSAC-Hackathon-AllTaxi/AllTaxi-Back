@@ -10,10 +10,13 @@ import com.google.cloud.speech.v1.SpeechRecognitionAlternative;
 import com.google.cloud.speech.v1.SpeechRecognitionResult;
 import com.google.cloud.speech.v1.SpeechSettings;
 import com.google.protobuf.ByteString;
+import com.sesac.alltaxi.infra.S3Uploader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,8 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/ai")
 public class AiController {
+
+    private final S3Uploader s3Uploader;
 
     @Value("${spring.cloud.gcp.speech.credentials.location}")
     private String credentialsPath;
@@ -60,5 +66,15 @@ public class AiController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @PostMapping("/s3")
+    public String testPutS3(@RequestParam MultipartFile file) {
+        return s3Uploader.put(file);
+    }
+
+    @DeleteMapping("/s3")
+    public boolean testDeleteS3(@RequestParam String key) {
+        return s3Uploader.delete(key);
     }
 }
