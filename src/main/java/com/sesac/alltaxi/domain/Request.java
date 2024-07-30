@@ -16,8 +16,13 @@ public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String pickupLocation;
-    private String destination;
+    private String destinationLocation;
+
+    private String destinationName;
+    private String destinationAddress;
+    private String imageUrl;
     private String status;
 
     @ManyToOne

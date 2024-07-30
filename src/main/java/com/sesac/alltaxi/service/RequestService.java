@@ -10,7 +10,6 @@ import com.sesac.alltaxi.repository.DriverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,7 +30,10 @@ public class RequestService {
         Request request = new Request();
         request.setUser(user);
         request.setPickupLocation(requestDto.getPickupLocation());
-        request.setDestination(requestDto.getDestination());
+        request.setDestinationLocation(requestDto.getDestinationLocation());
+        request.setDestinationName(requestDto.getDestinationName());
+        request.setDestinationAddress(requestDto.getDestinationAddress());
+        request.setImageUrl(requestDto.getImageUrl());
         request.setStatus("pending");
         return requestRepository.save(request);
     }
