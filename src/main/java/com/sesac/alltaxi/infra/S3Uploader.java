@@ -38,13 +38,10 @@ public class S3Uploader {
                     ByteBuffer.wrap(file.getBytes())));
 
             log.info("Picture uploaded successfully to S3");
-
-            // 저장 성공 시 객체 키 반환하는 것으로 임시 설정
             return key;
         }
         catch (IOException | S3Exception e) {
             log.error("Error uploading picture to S3: " + e.getMessage());
-            // 저장 실패 시 "error" 문자열 반환하는 것으로 임시 설정
             return "error";
         }
     }

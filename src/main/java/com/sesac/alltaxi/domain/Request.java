@@ -1,12 +1,11 @@
 package com.sesac.alltaxi.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,8 +15,13 @@ public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String pickupLocation;
-    private String destination;
+
+    @ElementCollection
+    private List<String> pickupLocation = new ArrayList<>();
+    @ElementCollection
+    private List<String> destination = new ArrayList<>();
+    // s3에 올라간 이미지 key 저장
+    private String imageKey;
     private String status;
 
     @ManyToOne
