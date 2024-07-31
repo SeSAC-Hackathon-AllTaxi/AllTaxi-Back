@@ -27,6 +27,7 @@ dependencies {
 	implementation platform('io.awspring.cloud:spring-cloud-aws-starters:3.0.0-M2')
 	implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.0-M1")
 	implementation platform('software.amazon.awssdk:bom:2.20.56')
+	implementation 'com.google.cloud:google-cloud-translate:1.95.0'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'
