@@ -1,18 +1,18 @@
 package com.sesac.alltaxi.controller;
 
+import com.drew.imaging.ImageProcessingException;
 import com.sesac.alltaxi.domain.Driver;
 import com.sesac.alltaxi.domain.Request;
 import com.sesac.alltaxi.domain.User;
 import com.sesac.alltaxi.dto.AiDestinationResponseDto;
+import com.sesac.alltaxi.dto.PickUpResponseDto;
 import com.sesac.alltaxi.dto.UserVoiceDto;
 import com.sesac.alltaxi.dto.RequestDto;
-import com.sesac.alltaxi.service.DriverService;
-import com.sesac.alltaxi.service.RequestService;
-import com.sesac.alltaxi.service.UserService;
-import com.sesac.alltaxi.service.GenerativeAiService;
-import com.sesac.alltaxi.service.SpeechToTextService;
+import com.sesac.alltaxi.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api")
@@ -23,6 +23,8 @@ public class MainController {
 
     @Autowired
     private DriverService driverService;
+    @Autowired
+    private GuardianService guardianService;
 
     @Autowired
     private RequestService requestService;
@@ -32,6 +34,9 @@ public class MainController {
 
     @Autowired
     private SpeechToTextService speechToTextService;
+
+    @Autowired
+    private AiController aiController;
 
     @PostMapping("/user")
     public User createUser(@RequestBody User user) {
@@ -63,5 +68,17 @@ public class MainController {
     @GetMapping("/request/{id}")
     public Request getRequest(@PathVariable Long id) {
         return requestService.getRequestById(id).orElse(null);
+    }
+
+    @PostMapping("/set-pickup-point/{requestId}")
+    public PickUpResponseDto setPickupPoint(@RequestPart(value = "file") MultipartFile image, @PathVariable("requestId") Long requestId) throws ImageProcessingException, IOException {
+        String imageKey = aiController.PutS3(image);
+        return requestService.setPickupPoint(image, requestId, imageKey);
+    }
+
+    @PostMapping("/send-sms/{requestId}")
+    public void sendSMS(@PathVariable("requestId") Long requestId){
+        guardianService.sendSMS(requestId);
+        return ;
     }
 }

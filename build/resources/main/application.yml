@@ -20,9 +20,9 @@ spring:
         bucket: all-taxi
 
   datasource:
-    url: ${AWS_MYSQL_URL}
-    username: ${AWS_MYSQL_USERNAME}
-    password: ${AWS_MYSQL_PASSWORD}
+    url: jdbc:mysql://localhost:3306/taxi
+    username: root
+    password: sso8690@
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -32,12 +32,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-  servlet:
-    multipart:
-      maxFileSize: 10MB
-      maxRequestSize: 30MB
 
-coolsms:
-  api:
-    key: ${COOLSMS_KEY}
-    secret: ${COOLSMS_SECRETKEY}
+  coolsms:
+    api:
+      key: "NCSYSEUXNL3DMV8U"
+      secret: "6F0QZZ2O11QMLDQPZBNRSL3AX5HXWMNU"

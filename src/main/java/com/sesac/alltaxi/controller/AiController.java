@@ -69,7 +69,7 @@ public class AiController {
     }
 
     @PostMapping("/s3")
-    public String testPutS3(@RequestParam MultipartFile file) {
+    public String PutS3(@RequestParam MultipartFile file) {
         return s3Uploader.put(file);
     }
 
