@@ -35,5 +35,5 @@ spring:
 
   coolsms:
     api:
-      key: "NCSYSEUXNL3DMV8U"
-      secret: "6F0QZZ2O11QMLDQPZBNRSL3AX5HXWMNU"
+      key: ${COOLSMS_KEY}
+      secret: ${COOLSMS_SECRETKEY}

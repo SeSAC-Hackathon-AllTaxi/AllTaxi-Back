@@ -9,6 +9,6 @@ import java.util.List;
 @Getter
 @Setter
 public class PickUpResponseDto {
-    private List<String> destination = new ArrayList<>();
-    private List<String> pickupLocation = new ArrayList<>();
+    private String pickupLocation;
+    private String destinationLocation;
 }

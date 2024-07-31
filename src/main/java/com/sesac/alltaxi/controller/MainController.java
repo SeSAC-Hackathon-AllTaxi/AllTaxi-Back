@@ -8,16 +8,10 @@ import com.sesac.alltaxi.dto.AiDestinationResponseDto;
 import com.sesac.alltaxi.dto.PickUpResponseDto;
 import com.sesac.alltaxi.dto.UserVoiceDto;
 import com.sesac.alltaxi.dto.RequestDto;
-import com.sesac.alltaxi.service.DriverService;
-import com.sesac.alltaxi.service.RequestService;
-import com.sesac.alltaxi.service.UserService;
-import com.sesac.alltaxi.service.GenerativeAiService;
-import com.sesac.alltaxi.service.SpeechToTextService;
+import com.sesac.alltaxi.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
 import java.io.IOException;
 
 @RestController
@@ -29,6 +23,8 @@ public class MainController {
 
     @Autowired
     private DriverService driverService;
+    @Autowired
+    private GuardianService guardianService;
 
     @Autowired
     private RequestService requestService;
@@ -83,7 +79,7 @@ public class MainController {
 
     @PostMapping("/send-sms/{requestId}")
     public void sendSMS(@PathVariable("requestId") Long requestId){
-        userService.sendSMS(requestId);
+        guardianService.sendSMS(requestId);
         return ;
     }
 }
