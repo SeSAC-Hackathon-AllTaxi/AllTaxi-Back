@@ -32,8 +32,12 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+  servlet:
+    multipart:
+      maxFileSize: 10MB
+      maxRequestSize: 30MB
 
-  coolsms:
-    api:
-      key: ${COOLSMS_KEY}
-      secret: ${COOLSMS_SECRETKEY}
+coolsms:
+  api:
+    key: ${COOLSMS_KEY}
+    secret: ${COOLSMS_SECRETKEY}
