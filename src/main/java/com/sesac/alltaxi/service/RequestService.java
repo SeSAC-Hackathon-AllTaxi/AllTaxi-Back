@@ -16,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,7 +35,11 @@ public class RequestService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Request request = new Request();
         request.setUser(user);
-//        request.setDestination(requestDto.getDestination());
+        request.setPickupLocation(requestDto.getPickupLocation());
+        request.setDestinationLocation(requestDto.getDestinationLocation());
+        request.setDestinationName(requestDto.getDestinationName());
+        request.setDestinationAddress(requestDto.getDestinationAddress());
+        request.setImageUrl(requestDto.getImageUrl());
         request.setStatus("pending");
         return requestRepository.save(request);
     }
@@ -64,16 +66,13 @@ public class RequestService {
         double longitude = gpsDirectory.getGeoLocation().getLongitude();
         double latitude = gpsDirectory.getGeoLocation().getLatitude();
         // 픽업 위치 설정
-        List<String> pickupLocation = new ArrayList<>();
-        pickupLocation.add(String.valueOf(longitude));
-        pickupLocation.add(String.valueOf(latitude));
-        request.setPickupLocation(pickupLocation);
+        request.setPickupLocation(String.valueOf(longitude)+","+String.valueOf(latitude));
         // 이미지 key 저장
-        request.setImageKey(imageKey);
+        request.setImageUrl(imageKey);
         // 응답 DTO 설정
         PickUpResponseDto pickUpResponseDto = new PickUpResponseDto();
         pickUpResponseDto.setPickupLocation(request.getPickupLocation());
-        pickUpResponseDto.setDestination(request.getDestination());
+        pickUpResponseDto.setDestinationLocation(request.getDestinationLocation());
         // 요청 저장
         requestRepository.save(request);
         return pickUpResponseDto;

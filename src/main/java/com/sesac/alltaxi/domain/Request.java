@@ -15,13 +15,12 @@ public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String pickupLocation;
+    private String destinationLocation;
 
-    @ElementCollection
-    private List<String> pickupLocation = new ArrayList<>();
-    @ElementCollection
-    private List<String> destination = new ArrayList<>();
-    // s3에 올라간 이미지 key 저장
-    private String imageKey;
+    private String destinationName;
+    private String destinationAddress;
+    private String imageUrl;
     private String status;
 
     @ManyToOne
