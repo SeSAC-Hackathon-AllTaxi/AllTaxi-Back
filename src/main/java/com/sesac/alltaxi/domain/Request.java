@@ -18,6 +18,7 @@ public class Request {
     private String destinationAddress;
     private String imageUrl;
     private String status;
+    private String imageDescription;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
