@@ -47,6 +47,7 @@ public class RequestService {
         request.setDestinationName(placeName);
         request.setDestinationAddress(address);
         request.setDestinationLocation(latitude + "," + longitude);
+        request.setPickupLocation("37.5665256,127.0092236"); // 픽업 위치 설정
         request.setStatus("created");
 
         requestRepository.save(request);
@@ -76,11 +77,10 @@ public class RequestService {
 
         // 응답 DTO 설정
         PickUpResponseDto pickUpResponseDto = new PickUpResponseDto();
-        pickUpResponseDto.setPickupLocation("37.5665256,127.0092236");
+        pickUpResponseDto.setPickupLocation(request.getPickupLocation());
         pickUpResponseDto.setDestinationLocation(request.getDestinationLocation());
 
         // 픽업 위치와 이미지 key를 설정하고 저장
-        request.setPickupLocation(pickUpResponseDto.getPickupLocation());
         request.setImageUrl(imageKey);
         requestRepository.save(request);
 
@@ -101,6 +101,7 @@ public class RequestService {
         Request request = requestRepository.findById(requestId).orElseThrow();
         request.setImageDescription(response.getBody());
     }
+
     public DriverMatchResponseDto matchTaxi(Long requestId) {
         Request request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
