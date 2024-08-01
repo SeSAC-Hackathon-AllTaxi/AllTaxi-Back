@@ -1,5 +1,9 @@
 package com.sesac.alltaxi.service;
 
+import com.sesac.alltaxi.domain.Driver;
+import com.sesac.alltaxi.domain.User;
+import com.sesac.alltaxi.dto.DriverMatchResponseDto;
+import com.sesac.alltaxi.repository.UserRepository;
 import com.sesac.alltaxi.response.ApiResponse;
 import com.sesac.alltaxi.domain.Request;
 import com.sesac.alltaxi.dto.PickUpResponseDto;
@@ -13,12 +17,35 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.GpsDirectory;
 
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 public class RequestService {
 
     @Autowired
     private RequestRepository requestRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private DriverService driverService;
+
+    public ApiResponse<Long> createRequestWithDestination(Long userId, String placeName, String address, double latitude, double longitude) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        Request request = new Request();
+        request.setUser(user);
+        request.setDestinationName(placeName);
+        request.setDestinationAddress(address);
+        request.setDestinationLocation(latitude + "," + longitude);
+        request.setStatus("created");
+
+        requestRepository.save(request);
+        return ApiResponse.ok(request.getId());
+    }
 
     public PickUpResponseDto setPickupPoint(MultipartFile image, Long requestId, String imageKey) throws ImageProcessingException, IOException {
         Request request = requestRepository.findById(requestId)
@@ -44,16 +71,54 @@ public class RequestService {
         return pickUpResponseDto;
     }
 
-    public ApiResponse<Long> setDestinationPoint(Long requestId, String placeName, String address, double latitude, double longitude) {
+    public DriverMatchResponseDto matchTaxi(Long requestId) {
         Request request = requestRepository.findById(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
-        // 도착지 정보 설정
-        request.setDestinationName(placeName);
-        request.setDestinationAddress(address);
-        request.setDestinationLocation(latitude + "," + longitude);
-        // 요청 저장
+                .orElseThrow(() -> new RuntimeException("Request not found"));
+
+        List<Driver> availableDrivers = driverService.getAvailableDrivers();
+        if (availableDrivers.isEmpty()) {
+            throw new RuntimeException("No available drivers found");
+        }
+
+        // 픽업 위치를 가져옴
+        String[] pickupLocation = request.getPickupLocation().split(",");
+        double pickupLatitude = Double.parseDouble(pickupLocation[0]);
+        double pickupLongitude = Double.parseDouble(pickupLocation[1]);
+
+        // 가장 가까운 드라이버 찾기
+        Driver matchedDriver = availableDrivers.stream()
+                .min(Comparator.comparingDouble(driver -> distance(pickupLatitude, pickupLongitude, driver.getLatitude(), driver.getLongitude())))
+                .orElseThrow(() -> new RuntimeException("No available drivers found"));
+
+        request.setDriver(matchedDriver);
+        request.setStatus("matched");
         requestRepository.save(request);
-        Long id = request.getId();
-        return ApiResponse.ok(id);
+
+        DriverMatchResponseDto responseDto = new DriverMatchResponseDto();
+        responseDto.setRequestId(request.getId());
+        responseDto.setUserId(request.getUser().getId());
+        responseDto.setDriverId(matchedDriver.getId());
+        responseDto.setDriverName(matchedDriver.getName());
+        responseDto.setDriverPhoneNumber(matchedDriver.getPhoneNumber());
+        responseDto.setDriverCarNumber(matchedDriver.getCarNumber());
+        responseDto.setPickupLocation(request.getPickupLocation());
+        responseDto.setDestinationLocation(request.getDestinationLocation());
+        responseDto.setDestinationName(request.getDestinationName());
+        responseDto.setDestinationAddress(request.getDestinationAddress());
+        responseDto.setImageUrl(request.getImageUrl());
+        responseDto.setStatus(request.getStatus());
+
+        return responseDto;
+    }
+
+    private double distance(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371;
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
     }
 }
