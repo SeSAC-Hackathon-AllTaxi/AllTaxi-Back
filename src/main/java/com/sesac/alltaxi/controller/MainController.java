@@ -48,9 +48,10 @@ public class MainController {
     }
 
     @PostMapping("/set-pickup-point/{requestId}")
-    public PickUpResponseDto setPickupPoint(@RequestPart(value = "file") MultipartFile image, @PathVariable("requestId") Long requestId) throws ImageProcessingException, IOException {
+    public ResponseEntity<PickUpResponseDto> setPickupPoint(@RequestPart(value = "file") MultipartFile image, @PathVariable("requestId") Long requestId) throws ImageProcessingException, IOException {
         String imageKey = s3Uploader.put(image);
-        return requestService.setPickupPoint(image, requestId, imageKey);
+        PickUpResponseDto response = requestService.setPickupPoint(requestId, imageKey);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/match-taxi/{requestId}")

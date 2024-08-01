@@ -10,11 +10,7 @@ import com.sesac.alltaxi.dto.PickUpResponseDto;
 import com.sesac.alltaxi.repository.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
-import com.drew.metadata.Metadata;
-import com.drew.metadata.exif.GpsDirectory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,19 +61,11 @@ public class RequestService {
         userRepository.save(user);
     }
 
-    public PickUpResponseDto setPickupPoint(MultipartFile image, Long requestId, String imageKey) throws ImageProcessingException, IOException {
+    public PickUpResponseDto setPickupPoint(Long requestId, String imageKey) throws ImageProcessingException, IOException {
         Request request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
-        // InputStream을 사용하여 이미지 메타데이터 읽기
-        Metadata metadata = ImageMetadataReader.readMetadata(image.getInputStream());
-        GpsDirectory gpsDirectory = metadata.getFirstDirectoryOfType(GpsDirectory.class);
-        if (gpsDirectory == null || gpsDirectory.getGeoLocation() == null) {
-            throw new RuntimeException("GPS data not found in image");
-        }
-        double longitude = gpsDirectory.getGeoLocation().getLongitude();
-        double latitude = gpsDirectory.getGeoLocation().getLatitude();
         // 픽업 위치 설정
-        request.setPickupLocation(String.valueOf(longitude) + "," + String.valueOf(latitude));
+        request.setPickupLocation("37.5665256,127.0092236");
         // 이미지 key 저장
         request.setImageUrl(imageKey);
         // 응답 DTO 설정
@@ -88,6 +76,7 @@ public class RequestService {
         requestRepository.save(request);
         return pickUpResponseDto;
     }
+
 
     public DriverMatchResponseDto matchTaxi(Long requestId) {
         Request request = requestRepository.findById(requestId)
