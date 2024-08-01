@@ -17,6 +17,7 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.GpsDirectory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -44,7 +45,24 @@ public class RequestService {
         request.setStatus("created");
 
         requestRepository.save(request);
+
+        updateRecentAddresses(user, placeName);
+
         return ApiResponse.ok(request.getId());
+    }
+
+    private void updateRecentAddresses(User user, String address) {
+        List<String> recentAddresses = user.getRecentAddresses();
+        if (recentAddresses == null) {
+            recentAddresses = new ArrayList<>();
+        }
+        recentAddresses.remove(address); // 중복 제거
+        recentAddresses.add(0, address); // 맨 앞에 추가
+        if (recentAddresses.size() > 3) {
+            recentAddresses.remove(3); // 최대 3개 유지
+        }
+        user.setRecentAddresses(recentAddresses);
+        userRepository.save(user);
     }
 
     public PickUpResponseDto setPickupPoint(MultipartFile image, Long requestId, String imageKey) throws ImageProcessingException, IOException {
