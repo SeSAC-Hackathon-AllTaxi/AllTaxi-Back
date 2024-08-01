@@ -5,7 +5,7 @@ import com.sesac.alltaxi.repository.DriverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class DriverService {
@@ -17,7 +17,8 @@ public class DriverService {
         return driverRepository.save(driver);
     }
 
-    public Optional<Driver> getDriverById(Long id) {
-        return driverRepository.findById(id);
+    public List<Driver> getAvailableDrivers() {
+        return driverRepository.findByStatus("available");
     }
+
 }
