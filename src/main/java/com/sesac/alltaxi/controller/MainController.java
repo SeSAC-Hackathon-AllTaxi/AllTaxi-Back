@@ -56,7 +56,7 @@ public class MainController {
     @PostMapping("/match-taxi/{requestId}")
     public ResponseEntity<DriverMatchResponseDto> matchTaxi(@PathVariable("requestId") Long requestId) {
         DriverMatchResponseDto response = requestService.matchTaxi(requestId);
-        guardianService.sendSMS(requestId);
+        //guardianService.sendSMS(requestId);
         return ResponseEntity.ok(response);
     }
 
