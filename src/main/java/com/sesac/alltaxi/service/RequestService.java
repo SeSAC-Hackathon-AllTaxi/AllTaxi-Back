@@ -9,8 +9,14 @@ import com.sesac.alltaxi.domain.Request;
 import com.sesac.alltaxi.dto.PickUpResponseDto;
 import com.sesac.alltaxi.repository.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import com.drew.imaging.ImageProcessingException;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +34,8 @@ public class RequestService {
 
     @Autowired
     private DriverService driverService;
+
+    private final RestTemplate restTemplate = new RestTemplate();
 
     public ApiResponse<Long> createRequestWithDestination(Long userId, String placeName, String address, double latitude, double longitude) {
         User user = userRepository.findById(userId)
@@ -77,7 +85,20 @@ public class RequestService {
         return pickUpResponseDto;
     }
 
+    @Async
+    public void callImageDescriptionAI(Long requestId, String imageKey) {
+        String url = "http://13.125.39.9:5000/image";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
+        String jsonBody = "{\"image_key\": \"" + imageKey + "\"}";
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(jsonBody, headers);
+        ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
+
+        Request request = requestRepository.findById(requestId).orElseThrow();
+        request.setImageDescription(response.getBody());
+    }
     public DriverMatchResponseDto matchTaxi(Long requestId) {
         Request request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
