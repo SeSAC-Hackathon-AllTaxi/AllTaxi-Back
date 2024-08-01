@@ -3,14 +3,21 @@ package com.sesac.alltaxi.service;
 import com.sesac.alltaxi.domain.Driver;
 import com.sesac.alltaxi.domain.User;
 import com.sesac.alltaxi.dto.DriverMatchResponseDto;
+import com.sesac.alltaxi.dto.RequestForDriverDto;
 import com.sesac.alltaxi.repository.UserRepository;
 import com.sesac.alltaxi.response.ApiResponse;
 import com.sesac.alltaxi.domain.Request;
 import com.sesac.alltaxi.dto.PickUpResponseDto;
 import com.sesac.alltaxi.repository.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import com.drew.imaging.ImageProcessingException;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +35,8 @@ public class RequestService {
 
     @Autowired
     private DriverService driverService;
+
+    private final RestTemplate restTemplate = new RestTemplate();
 
     public ApiResponse<Long> createRequestWithDestination(Long userId, String placeName, String address, double latitude, double longitude) {
         User user = userRepository.findById(userId)
@@ -78,7 +87,20 @@ public class RequestService {
         return pickUpResponseDto;
     }
 
+    @Async
+    public void callImageDescriptionAI(Long requestId, String imageKey) {
+        String url = "http://13.125.39.9:5000/image";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
+        String jsonBody = "{\"image_key\": \"" + imageKey + "\"}";
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(jsonBody, headers);
+        ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
+
+        Request request = requestRepository.findById(requestId).orElseThrow();
+        request.setImageDescription(response.getBody());
+    }
     public DriverMatchResponseDto matchTaxi(Long requestId) {
         Request request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
@@ -129,5 +151,15 @@ public class RequestService {
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c;
+    }
+
+    public RequestForDriverDto getRequestInfo(Long requestId) {
+        Request request = requestRepository.findById(requestId).orElseThrow();
+        RequestForDriverDto responseDto = new RequestForDriverDto();
+        responseDto.setImageDescription(request.getImageDescription());
+        responseDto.setDestinationName(request.getDestinationName());
+        responseDto.setDestinationAddress(request.getDestinationAddress());
+        responseDto.setImageUrl(request.getImageUrl());
+        return responseDto;
     }
 }
