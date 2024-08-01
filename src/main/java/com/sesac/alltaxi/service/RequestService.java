@@ -64,16 +64,17 @@ public class RequestService {
     public PickUpResponseDto setPickupPoint(Long requestId, String imageKey) throws ImageProcessingException, IOException {
         Request request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
-        // 픽업 위치 설정
-        request.setPickupLocation("37.5665256,127.0092236");
-        // 이미지 key 저장
-        request.setImageUrl(imageKey);
+
         // 응답 DTO 설정
         PickUpResponseDto pickUpResponseDto = new PickUpResponseDto();
-        pickUpResponseDto.setPickupLocation(request.getPickupLocation());
+        pickUpResponseDto.setPickupLocation("37.5665256,127.0092236");
         pickUpResponseDto.setDestinationLocation(request.getDestinationLocation());
-        // 요청 저장
+
+        // 픽업 위치와 이미지 key를 설정하고 저장
+        request.setPickupLocation(pickUpResponseDto.getPickupLocation());
+        request.setImageUrl(imageKey);
         requestRepository.save(request);
+
         return pickUpResponseDto;
     }
 
