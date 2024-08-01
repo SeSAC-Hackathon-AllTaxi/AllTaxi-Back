@@ -79,13 +79,14 @@ public class GuardianService {
         Request request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
         Driver driver = request.getDriver();
+        User user = request.getUser();
         Message message = new Message();
         message.setFrom("01062713407");
         message.setTo("01062713407");
-        message.setText("[올택시 보호자 택시 탑승정보 안내]\n목적지명:"+request.getDestinationName()+
-                "\n목적지 주소:"+request.getDestinationAddress()
-                +"\n택시기사 전화번호:"+driver.getPhoneNumber()
-                +"\n택시번호:"+driver.getCarNumber());
+        message.setText("[올택시 보호자 택시 탑승 안내] \n" +
+                user.getName()+"님이 차번호("+driver.getCarNumber()+") 탑승 예정입니다."+
+                "\n목적지명:"+request.getDestinationName()+
+                "\n목적지 주소:"+request.getDestinationAddress());
         this.messageService.sendOne(new SingleMessageSendingRequest(message));
         return ;
     }
