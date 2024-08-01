@@ -1,7 +1,7 @@
 package com.sesac.alltaxi.service;
 
+import com.sesac.alltaxi.response.ApiResponse;
 import com.sesac.alltaxi.domain.Request;
-import com.sesac.alltaxi.dto.DestinationResponseDto;
 import com.sesac.alltaxi.dto.PickUpResponseDto;
 import com.sesac.alltaxi.repository.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,20 +44,15 @@ public class RequestService {
         return pickUpResponseDto;
     }
 
-    public DestinationResponseDto setDestinationPoint(Long requestId, String destinationLocation, String destinationName, String destinationAddress) {
+    public ApiResponse<Void> setDestinationPoint(Long requestId, String placeName, String address, double latitude, double longitude) {
         Request request = requestRepository.findById(requestId)
-                .orElseThrow(() -> new RuntimeException("Request not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
         // 도착지 정보 설정
-        request.setDestinationLocation(destinationLocation);
-        request.setDestinationName(destinationName);
-        request.setDestinationAddress(destinationAddress);
+        request.setDestinationName(placeName);
+        request.setDestinationAddress(address);
+        request.setDestinationLocation(latitude + "," + longitude);
         // 요청 저장
         requestRepository.save(request);
-        // 응답 DTO 설정
-        DestinationResponseDto destinationResponseDto = new DestinationResponseDto();
-        destinationResponseDto.setDestinationLocation(request.getDestinationLocation());
-        destinationResponseDto.setDestinationName(request.getDestinationName());
-        destinationResponseDto.setDestinationAddress(request.getDestinationAddress());
-        return destinationResponseDto;
+        return ApiResponse.ok();
     }
 }

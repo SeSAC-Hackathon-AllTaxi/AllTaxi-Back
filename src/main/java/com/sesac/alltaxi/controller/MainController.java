@@ -1,9 +1,11 @@
 package com.sesac.alltaxi.controller;
 
 import com.drew.imaging.ImageProcessingException;
+import com.sesac.alltaxi.response.ApiResponse;
 import com.sesac.alltaxi.dto.*;
 import com.sesac.alltaxi.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -12,11 +14,11 @@ import java.io.IOException;
 @RequestMapping("/api")
 public class MainController {
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private DriverService driverService;
+//    @Autowired
+//    private UserService userService;
+//
+//    @Autowired
+//    private DriverService driverService;
     @Autowired
     private GuardianService guardianService;
 
@@ -25,9 +27,6 @@ public class MainController {
 
     @Autowired
     private AiController aiController;
-
-    @Autowired
-    private GeoCodingService geoCodingService;
 
 //    @Autowired
 //    private GenerativeAiService generativeAiService;
@@ -72,13 +71,12 @@ public class MainController {
     }
 
     @PostMapping("/set-destination-point/{requestId}")
-    public DestinationResponseDto setDestinationPoint(@PathVariable("requestId") Long requestId,
-                                                      @RequestParam("destinationName") String destinationName) throws IOException {
-        // 텍스트를 기반으로 주소 및 좌표 변환
-        GeoCodingResponseDto geoCodingResponse = geoCodingService.getCoordinates(destinationName);
-        String destinationLocation = geoCodingResponse.getLatitude() + "," + geoCodingResponse.getLongitude();
-        String destinationAddress = geoCodingResponse.getFormattedAddress();
-
-        return requestService.setDestinationPoint(requestId, destinationLocation, destinationName, destinationAddress);
+    public ResponseEntity<ApiResponse<Void>> setDestinationPoint(@PathVariable("requestId") Long requestId,
+                                                                 @RequestParam("placeName") String placeName,
+                                                                 @RequestParam("address") String address,
+                                                                 @RequestParam("latitude") double latitude,
+                                                                 @RequestParam("longitude") double longitude) {
+        ApiResponse<Void> response = requestService.setDestinationPoint(requestId, placeName, address, latitude, longitude);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 }
