@@ -6,10 +6,12 @@ import com.sesac.alltaxi.dto.*;
 import com.sesac.alltaxi.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import com.sesac.alltaxi.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.sesac.alltaxi.infra.S3Uploader;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -24,6 +26,9 @@ public class MainController {
     @Autowired
     private S3Uploader s3Uploader;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/create-request")
     public ResponseEntity<ApiResponse<Long>> createRequest(@RequestBody RequestCreateDto requestCreateDto) {
         ApiResponse<Long> response = requestService.createRequestWithDestination(
@@ -34,6 +39,12 @@ public class MainController {
                 requestCreateDto.getLongitude()
         );
         return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @GetMapping("/user/{userId}/recent-addresses")
+    public ResponseEntity<List<String>> getRecentAddresses(@PathVariable Long userId) {
+        List<String> recentAddresses = userService.getRecentAddresses(userId);
+        return ResponseEntity.ok(recentAddresses);
     }
 
     @PostMapping("/set-pickup-point/{requestId}")

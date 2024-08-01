@@ -17,6 +17,9 @@ public class User {
     private String name;
     private String phoneNumber;
 
+    @ElementCollection
+    private List<String> recentAddresses;
+
     @OneToMany(mappedBy = "user")
     private List<Request> requests;
 }
