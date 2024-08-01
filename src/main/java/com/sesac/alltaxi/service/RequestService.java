@@ -32,7 +32,7 @@ public class RequestService {
         double longitude = gpsDirectory.getGeoLocation().getLongitude();
         double latitude = gpsDirectory.getGeoLocation().getLatitude();
         // 픽업 위치 설정
-        request.setPickupLocation(String.valueOf(longitude)+","+String.valueOf(latitude));
+        request.setPickupLocation(String.valueOf(longitude) + "," + String.valueOf(latitude));
         // 이미지 key 저장
         request.setImageUrl(imageKey);
         // 응답 DTO 설정
@@ -44,7 +44,7 @@ public class RequestService {
         return pickUpResponseDto;
     }
 
-    public ApiResponse<Void> setDestinationPoint(Long requestId, String placeName, String address, double latitude, double longitude) {
+    public ApiResponse<Long> setDestinationPoint(Long requestId, String placeName, String address, double latitude, double longitude) {
         Request request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new IllegalArgumentException("Request not found"));
         // 도착지 정보 설정
@@ -53,6 +53,7 @@ public class RequestService {
         request.setDestinationLocation(latitude + "," + longitude);
         // 요청 저장
         requestRepository.save(request);
-        return ApiResponse.ok();
+        Long id = request.getId();
+        return ApiResponse.ok(id);
     }
 }

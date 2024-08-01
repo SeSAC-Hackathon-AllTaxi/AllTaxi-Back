@@ -71,12 +71,13 @@ public class MainController {
     }
 
     @PostMapping("/set-destination-point/{requestId}")
-    public ResponseEntity<ApiResponse<Void>> setDestinationPoint(@PathVariable("requestId") Long requestId,
+    public ResponseEntity<ApiResponse<Long>> setDestinationPoint(@PathVariable("requestId") Long requestId,
                                                                  @RequestParam("placeName") String placeName,
                                                                  @RequestParam("address") String address,
                                                                  @RequestParam("latitude") double latitude,
                                                                  @RequestParam("longitude") double longitude) {
-        ApiResponse<Void> response = requestService.setDestinationPoint(requestId, placeName, address, latitude, longitude);
+        ApiResponse<Long> response = requestService.setDestinationPoint(requestId, placeName, address, latitude, longitude);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
+
 }
