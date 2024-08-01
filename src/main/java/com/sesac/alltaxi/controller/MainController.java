@@ -62,4 +62,9 @@ public class MainController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/request/{requestId}")
+    public ResponseEntity<RequestForDriverDto> getRequestInfo(@PathVariable("requestId") Long requestId) {
+        RequestForDriverDto response = requestService.getRequestInfo(requestId);
+        return ResponseEntity.ok(response);
+    }
 }

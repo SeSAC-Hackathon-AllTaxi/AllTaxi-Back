@@ -3,6 +3,7 @@ package com.sesac.alltaxi.service;
 import com.sesac.alltaxi.domain.Driver;
 import com.sesac.alltaxi.domain.User;
 import com.sesac.alltaxi.dto.DriverMatchResponseDto;
+import com.sesac.alltaxi.dto.RequestForDriverDto;
 import com.sesac.alltaxi.repository.UserRepository;
 import com.sesac.alltaxi.response.ApiResponse;
 import com.sesac.alltaxi.domain.Request;
@@ -149,5 +150,15 @@ public class RequestService {
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c;
+    }
+
+    public RequestForDriverDto getRequestInfo(Long requestId) {
+        Request request = requestRepository.findById(requestId).orElseThrow();
+        RequestForDriverDto responseDto = new RequestForDriverDto();
+        responseDto.setImageDescription(request.getImageDescription());
+        responseDto.setDestinationName(request.getDestinationName());
+        responseDto.setDestinationAddress(request.getDestinationAddress());
+        responseDto.setImageUrl(request.getImageUrl());
+        return responseDto;
     }
 }
