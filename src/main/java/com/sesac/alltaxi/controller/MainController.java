@@ -53,15 +53,10 @@ public class MainController {
         return requestService.setPickupPoint(image, requestId, imageKey);
     }
 
-    @PostMapping("/send-sms/{requestId}")
-    public void sendSMS(@PathVariable("requestId") Long requestId){
-        guardianService.sendSMS(requestId);
-        return ;
-    }
-
     @PostMapping("/match-taxi/{requestId}")
     public ResponseEntity<DriverMatchResponseDto> matchTaxi(@PathVariable("requestId") Long requestId) {
         DriverMatchResponseDto response = requestService.matchTaxi(requestId);
+        guardianService.sendSMS(requestId);
         return ResponseEntity.ok(response);
     }
 
