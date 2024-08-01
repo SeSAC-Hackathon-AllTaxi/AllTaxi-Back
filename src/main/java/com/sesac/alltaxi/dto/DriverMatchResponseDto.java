@@ -18,4 +18,6 @@ public class DriverMatchResponseDto {
     private String destinationAddress;
     private String imageUrl;
     private String status;
+    private double driverLatitude;
+    private double driverLongitude;
 }

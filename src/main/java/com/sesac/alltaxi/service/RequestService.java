@@ -125,7 +125,8 @@ public class RequestService {
         responseDto.setDestinationAddress(request.getDestinationAddress());
         responseDto.setImageUrl(request.getImageUrl());
         responseDto.setStatus(request.getStatus());
-
+        responseDto.setDriverLatitude(matchedDriver.getLatitude());
+        responseDto.setDriverLongitude(matchedDriver.getLongitude());
         return responseDto;
     }
 
